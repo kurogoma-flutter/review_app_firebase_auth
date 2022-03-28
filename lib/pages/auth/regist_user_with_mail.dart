@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../components/dialog.dart';
 
-/**
- * ページ仕様
- * 1. メールアドレスとパスワードで登録できる
- * 2. パスワードの非表示はオンオフできる
- * 3. ログイン画面に遷移できる
- */
+/// ページ仕様
+/// 1. メールアドレスとパスワードで登録できる ✔
+/// 2. パスワードの非表示はオンオフできる
+/// 3. ログイン画面に遷移できる ✔
+
 class RegistUserWithMail extends StatefulWidget {
   const RegistUserWithMail({Key? key}) : super(key: key);
 
@@ -27,55 +27,140 @@ class _RegistUserWithMailState extends State<RegistUserWithMail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('ログイン'),
+      ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            /// TODO: バリデーション設定
-            TextFormField(
-              // テキスト入力のラベルを設定
-              decoration: const InputDecoration(labelText: "メールアドレス"),
-              onChanged: (String value) {
-                setState(() {
-                  newUserEmail = value;
-                });
-              },
+            const Text(
+              'メールアドレス',
+              style: TextStyle(
+                fontSize: 20,
+              ),
             ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: "パスワード（６文字以上）"),
-              // パスワードが見えないようにする
-              obscureText: true,
-              onChanged: (String value) {
-                setState(() {
-                  newUserPassword = value;
-                });
-              },
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  // メール/パスワードでユーザー登録
-                  final FirebaseAuth auth = FirebaseAuth.instance;
-                  final UserCredential result = await auth.createUserWithEmailAndPassword(
-                    email: newUserEmail,
-                    password: newUserPassword,
-                  );
+            Container(
+              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction, // 入力時バリデーション
+                cursorColor: Colors.blueAccent,
+                decoration: const InputDecoration(
+                  focusColor: Colors.red,
+                  labelText: 'メールアドレス',
+                  hintText: 'sample@gmail.com',
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
+                  border: OutlineInputBorder(borderSide: BorderSide()),
+                ),
+                maxLines: 1,
+                onChanged: (value) {
                   setState(() {
-                    infoText = "登録されました";
+                    newUserEmail = value;
                   });
-
-                  /// TODO: ログインに遷移 or そのままログインしてHomeへ遷移
-                } catch (e) {
-                  // 登録に失敗した場合
-                  setState(() {
-                    infoText = e.toString().replaceAll(RegExp(r'\[.*\] '), '');
-                  });
-
-                  return errorDialog('ログインエラー', infoText, context);
-                }
-              },
-              child: const Text("登録"),
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "入力してください";
+                  }
+                  return null;
+                },
+              ),
             ),
+            const SizedBox(height: 20),
+            const Text(
+              'パスワード',
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction, // 入力時バリデーション
+                cursorColor: Colors.blueAccent,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  focusColor: Colors.red,
+                  labelText: 'パスワード',
+                  hintText: 'Enter Your Password',
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.blueAccent)),
+                  border: OutlineInputBorder(borderSide: BorderSide()),
+                ),
+                maxLines: 1,
+                onChanged: (value) {
+                  setState(() {
+                    newUserPassword = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "入力してください";
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              height: 50,
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () async {
+                  try {
+                    // メール/パスワードでユーザー登録
+                    final FirebaseAuth auth = FirebaseAuth.instance;
+                    final UserCredential result = await auth.createUserWithEmailAndPassword(
+                      email: newUserEmail,
+                      password: newUserPassword,
+                    );
+                    setState(() {
+                      infoText = "登録されました";
+                    });
+
+                    /// そのままログインしてHomeへ遷移
+                    final UserCredential login = await auth.signInWithEmailAndPassword(
+                      email: newUserEmail,
+                      password: newUserPassword,
+                    );
+                    // ログインに成功した場合
+                    final User user = login.user!;
+                    setState(() {
+                      infoText = "ログイン!";
+                    });
+                    // ホームに画面遷移
+                    return context.go('/');
+                  } catch (e) {
+                    // 登録・ログインに失敗した場合
+                    setState(() {
+                      infoText = e.toString().replaceAll(RegExp(r'\[.*\] '), '');
+                    });
+
+                    return errorDialog('登録エラー', infoText, context);
+                  }
+                },
+                child: const Text(
+                  '新規登録',
+                  style: TextStyle(
+                    fontSize: 24,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blueAccent,
+                  onPrimary: Colors.white,
+                  shape: const StadiumBorder(),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                context.go('/login');
+              },
+              child: const Text('ログインはこちら'),
+            ),
+            const SizedBox(height: 60),
           ],
         ),
       ),
