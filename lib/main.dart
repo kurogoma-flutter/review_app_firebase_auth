@@ -1,11 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auth_basic/pages/review/create_review.dart';
 import 'package:go_router/go_router.dart';
 
 import 'pages/auth/mail_login_page.dart';
 import 'pages/auth/regist_user_with_mail.dart';
 import 'pages/home/home_page.dart';
+import 'pages/review/create_review.dart';
+import 'pages/review/review_detail.dart';
+import 'pages/user/user_profile.dart';
 
 Future<void> main() async {
   // Firebase初期化
@@ -38,13 +42,21 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, GoRouterState state) => const MailLoginPage(),
       ),
       GoRoute(
-        path: '/register',
+        path: '/createUser',
         builder: (BuildContext context, GoRouterState state) => const RegistUserWithMail(),
       ),
-      // GoRoute(
-      //   path: '/user',
-      //   builder: (BuildContext context, GoRouterState state) => const UserProfile(),
-      // ),
+      GoRoute(
+        path: '/user',
+        builder: (BuildContext context, GoRouterState state) => const UserProfile(),
+      ),
+      GoRoute(
+        path: '/createReview',
+        builder: (BuildContext context, GoRouterState state) => const CreateReview(),
+      ),
+      GoRoute(
+        path: '/reviewDetail/:id',
+        builder: (BuildContext context, GoRouterState state) => const ReviewDetail(),
+      ),
     ],
     initialLocation: '/',
   );
@@ -59,7 +71,7 @@ class AuthHomePage extends StatelessWidget {
         home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            // ログイン情報の取得中（ローディングでもいい）
+            // ログイン情報の取得中（ローディング）
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: Text('取得中...'),
