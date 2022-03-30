@@ -55,7 +55,11 @@ class MyApp extends StatelessWidget {
       ),
       GoRoute(
         path: '/reviewDetail/:id',
-        builder: (BuildContext context, GoRouterState state) => const ReviewDetail(),
+        builder: (context, state) {
+          // パスパラメータの値を取得するには state.params を使用
+          final int id = int.parse(state.params['id']!);
+          return ReviewDetail(id: id);
+        },
       ),
     ],
     initialLocation: '/',
