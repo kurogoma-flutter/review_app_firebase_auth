@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../components/dialog.dart';
 
 /// ページ仕様
-/// 1. メールアドレスとパスワードでログインできる
+/// 1. メールアドレスとパスワードでログインできる ✔
 /// 2. パスワードの非表示はオンオフできる
-/// 3. 新規登録画面に遷移できる
+/// 3. 新規登録画面に遷移できる ✔ ️️
 
 class MailLoginPage extends StatefulWidget {
   const MailLoginPage({Key? key}) : super(key: key);
