@@ -46,9 +46,6 @@ class _CreateReviewState extends State<CreateReview> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text("新規レビュー"),
-        ),
         body: Container(
           padding: const EdgeInsets.all(20),
           child: Column(

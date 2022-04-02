@@ -80,9 +80,6 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ユーザー情報'),
-      ),
       body: Column(
         children: [
           Container(
@@ -101,7 +98,7 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 50, bottom: 20),
+            margin: const EdgeInsets.symmetric(vertical: 24),
             height: size.height * 0.08,
             width: size.width * 0.5,
             child: ElevatedButton(
@@ -132,7 +129,6 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 40, bottom: 20),
             height: size.height * 0.08,
             width: size.width * 0.5,
             child: TextButton(

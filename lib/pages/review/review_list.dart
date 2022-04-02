@@ -79,9 +79,6 @@ class _ReviewListPageState extends State<ReviewListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('レビュー一覧'),
-      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _reviewStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
