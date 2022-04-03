@@ -157,7 +157,9 @@ class _CreateReviewState extends State<CreateReview> {
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      /// TODO: レビュー登録処理
+                    },
                     child: const Text(
                       '投稿する',
                       style: TextStyle(

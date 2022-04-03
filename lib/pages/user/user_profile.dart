@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../components/dialog.dart';
 
 /// ページ仕様
 /// 1. ユーザーID、アドレス、更新日時を表示
@@ -21,50 +24,6 @@ class _UserProfileState extends State<UserProfile> {
     setState(() {
       user = FirebaseAuth.instance.currentUser;
     });
-  }
-
-  _confirmDialog(String title, String text) async {
-    var result = await showDialog<int>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(text),
-          actions: <Widget>[
-            ElevatedButton(
-              child: const Text('キャンセル'),
-              onPressed: () => Navigator.of(context).pop(0),
-            ),
-            ElevatedButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.of(context).pop(1),
-            ),
-          ],
-        );
-      },
-    );
-    return result;
-  }
-
-  _alertDialog(String title, String text) async {
-    var result = await showDialog<int>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(text),
-          actions: <Widget>[
-            ElevatedButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.of(context).pop(1),
-            ),
-          ],
-        );
-      },
-    );
-    return result;
   }
 
   Future sendPasswordResetEmail(String email) async {
@@ -107,10 +66,10 @@ class _UserProfileState extends State<UserProfile> {
                 var result = await sendPasswordResetEmail(user.email);
                 if (result == 'success') {
                   // 成功したダイアログ
-                  _alertDialog('確認ダイアログ', '登録したメールアドレスに再設定用のメールを送信しました。');
+                  alertDialog('確認ダイアログ', '登録したメールアドレスに再設定用のメールを送信しました。', context);
                 } else {
                   // 失敗したダイアログ
-                  _alertDialog('エラーダイアログ', '送信に失敗しました。');
+                  alertDialog('エラーダイアログ', '送信に失敗しました。', context);
                 }
               },
               child: const Text(
@@ -128,15 +87,16 @@ class _UserProfileState extends State<UserProfile> {
               ),
             ),
           ),
-          Container(
+          SizedBox(
             height: size.height * 0.08,
             width: size.width * 0.5,
             child: TextButton(
-              onPressed: () {
+              onPressed: () async {
                 // 退会処理
-                var result = _confirmDialog('確認ダイアログ', '削除してもよろしいですか？');
+                var result = confirmDialog('確認ダイアログ', '削除してもよろしいですか？', context);
                 if (result == 1) {
-                  FirebaseAuth.instance.currentUser?.delete();
+                  await FirebaseAuth.instance.currentUser?.delete();
+                  context.go('/login');
                 }
               },
               child: const Text(

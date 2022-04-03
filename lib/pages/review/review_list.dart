@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../components/dialog.dart';
+
 class ReviewListPage extends StatefulWidget {
   const ReviewListPage({Key? key}) : super(key: key);
 
@@ -25,7 +27,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
     if (uid == documentUserId) {
       return IconButton(
         onPressed: () async {
-          var result = await _confirmDialog('確認ダイアログ', '削除してもよろしいですか？');
+          var result = await confirmDialog('確認ダイアログ', '削除してもよろしいですか？', context);
           if (result == 1) {
             // 削除
             await FirebaseFirestore.instance.collection('reviewList').doc(documentId).delete();
@@ -35,43 +37,9 @@ class _ReviewListPageState extends State<ReviewListPage> {
         iconSize: 28,
       );
     } else {
-      return IconButton(
-        // 一旦デバッグ
-        onPressed: () {
-          print(documentUserId);
-          print(uid);
-        },
-        icon: const Icon(
-          Icons.star,
-          color: Colors.white,
-        ),
-        iconSize: 28,
-      );
+      // 空要素
+      return const SizedBox();
     }
-  }
-
-  _confirmDialog(String title, String text) async {
-    var result = await showDialog<int>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(text),
-          actions: <Widget>[
-            ElevatedButton(
-              child: const Text('キャンセル'),
-              onPressed: () => Navigator.of(context).pop(0),
-            ),
-            ElevatedButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.of(context).pop(1),
-            ),
-          ],
-        );
-      },
-    );
-    return result;
   }
 
   final Stream<QuerySnapshot> _reviewStream = FirebaseFirestore.instance.collection('reviewList').orderBy('id', descending: false).snapshots();
@@ -124,11 +92,6 @@ class _ReviewListPageState extends State<ReviewListPage> {
               }).toList(),
             ),
           );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print(uid);
         },
       ),
     );

@@ -137,7 +137,7 @@ class _RegistUserWithMailState extends State<RegistUserWithMail> {
                       infoText = e.toString().replaceAll(RegExp(r'\[.*\] '), '');
                     });
 
-                    return errorDialog('登録エラー', infoText, context);
+                    return alertDialog('登録エラー', infoText, context);
                   }
                 },
                 child: const Text(

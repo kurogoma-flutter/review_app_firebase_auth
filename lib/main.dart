@@ -30,31 +30,31 @@ class MyApp extends StatelessWidget {
   final GoRouter _router = GoRouter(
     routes: <GoRoute>[
       GoRoute(
-        path: '/',
+        path: '/', // ベース：認証状態を識別してホーム画面orログインへ遷移させる
         builder: (BuildContext context, GoRouterState state) => const AuthHomePage(),
       ),
       GoRoute(
-        path: '/home',
+        path: '/home', // ホーム画面 : タブ切り替えできる画面
         builder: (BuildContext context, GoRouterState state) => const HomePage(),
       ),
       GoRoute(
-        path: '/login',
+        path: '/login', // ログイン画面
         builder: (BuildContext context, GoRouterState state) => const MailLoginPage(),
       ),
       GoRoute(
-        path: '/createUser',
+        path: '/createUser', // 新規ユーザー登録画面
         builder: (BuildContext context, GoRouterState state) => const RegistUserWithMail(),
       ),
       GoRoute(
-        path: '/user',
+        path: '/user', // ユーザープロフィール画面
         builder: (BuildContext context, GoRouterState state) => const UserProfile(),
       ),
       GoRoute(
-        path: '/createReview',
+        path: '/createReview', // 新規レビュー投稿
         builder: (BuildContext context, GoRouterState state) => const CreateReview(),
       ),
       GoRoute(
-        path: '/reviewDetail/:id',
+        path: '/reviewDetail/:id', // レビュー詳細ページ
         builder: (context, state) {
           // パスパラメータの値を取得するには state.params を使用
           final int id = int.parse(state.params['id']!);

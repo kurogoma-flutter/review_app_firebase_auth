@@ -128,7 +128,7 @@ class _MailLoginPageState extends State<MailLoginPage> {
                       infoText = e.toString().replaceAll(RegExp(r'\[.*\] '), '');
                     });
 
-                    return errorDialog('ログインエラー', infoText, context);
+                    return alertDialog('ログインエラー', infoText, context);
                   }
                 },
                 child: const Text(
