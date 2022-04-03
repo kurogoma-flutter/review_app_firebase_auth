@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auth_basic/components/dialog.dart';
+import 'package:go_router/go_router.dart';
 
 import '../review/create_review.dart';
 import '../review/review_list.dart';
@@ -52,6 +55,20 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('レビュー投稿アプリ'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              var result = confirmDialog('認証チェック', 'ログアウトしますか？', context);
+              if (result == 1) {
+                // ログアウト => ログインへ遷移
+                await FirebaseAuth.instance.signOut();
+                return context.go('/login');
+              }
+            },
+            icon: const Icon(Icons.logout_outlined),
+          ),
+        ],
       ),
       body: Center(
         child: _navigationList.elementAt(_selectedIndex), //n番目のウィジェットが呼び出される。
