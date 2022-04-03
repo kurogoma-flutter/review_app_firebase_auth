@@ -121,7 +121,7 @@ class _MailLoginPageState extends State<MailLoginPage> {
                       infoText = "ログイン!";
                     });
 
-                    /// TODO: 画面遷移処理 + 元画面破棄
+                    return context.go('/');
                   } catch (e) {
                     // ログインに失敗した場合
                     setState(() {
