@@ -59,11 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              var result = confirmDialog('認証チェック', 'ログアウトしますか？', context);
+              var result = await confirmDialog('認証チェック', 'ログアウトしますか？', context);
               if (result == 1) {
                 // ログアウト => ログインへ遷移
                 await FirebaseAuth.instance.signOut();
-                return context.go('/login');
+                context.go('/login');
               }
             },
             icon: const Icon(Icons.logout_outlined),
@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped, //ボタンが押されたときに、_onItemTappedが実行される。このとき、indexの値は受け渡される。
+        onTap: _onItemTapped,
       ),
     );
   }
