@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auth_basic/components/dialog.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 /// ページ仕様
 /// 1. 商品名・レビュー内容・ユーザー名を入れて登録できる
@@ -16,6 +20,9 @@ class CreateReview extends StatefulWidget {
 }
 
 class _CreateReviewState extends State<CreateReview> {
+  // レビュー本文
+  String _content = '';
+  // セレクトボックス用のリスト（Firebaseのにマスターあり）
   List<DocumentSnapshot> _documentList = [];
   List<String> itemList = [];
   String _selectedItem = '';
@@ -24,8 +31,31 @@ class _CreateReviewState extends State<CreateReview> {
     setState(() {
       _documentList = snapshot.docs;
     });
-
     _documentList.map((doc) => itemList.add(doc['name'])).toList();
+  }
+
+  // Firestoreへの保存処理
+  DateFormat dateFormat = DateFormat('yyyy/MM/dd');
+  DateTime today = DateTime.now();
+  List<DocumentSnapshot> _idList = [];
+  int _lastId = 0;
+  _getLastId() async {
+    var snapshotId = await FirebaseFirestore.instance.collection('reviewList').orderBy('id', descending: true).limit(1).get();
+    setState(() {
+      _idList = snapshotId.docs;
+    });
+    _lastId = _idList[0]['id'] + 1;
+  }
+
+  _storeReviewList() async {
+    await FirebaseFirestore.instance.collection('reviewList').add({
+      'id': _lastId,
+      'isBanned': false,
+      'itemName': _selectedItem,
+      'uid': FirebaseAuth.instance.currentUser!.uid,
+      'content': _content,
+      'createAt': today,
+    });
   }
 
   List<DropdownMenuItem<String>> items = [];
@@ -38,6 +68,8 @@ class _CreateReviewState extends State<CreateReview> {
         items.add(DropdownMenuItem(value: itemList[i], child: Center(child: Text(itemList[i]))));
       }
       _selectedItem = itemList.isNotEmpty ? itemList[0] : '';
+      // LastId取得
+      await _getLastId();
     });
   }
 
@@ -68,7 +100,7 @@ class _CreateReviewState extends State<CreateReview> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: Colors.black,
+                    color: Colors.grey,
                     width: 1.0,
                     style: BorderStyle.solid,
                   ),
@@ -136,7 +168,9 @@ class _CreateReviewState extends State<CreateReview> {
                   obscureText: false,
                   maxLines: 5,
                   onChanged: (value) {
-                    print(value);
+                    setState(() {
+                      _content = value;
+                    });
                   },
                 ),
               ),
@@ -157,8 +191,13 @@ class _CreateReviewState extends State<CreateReview> {
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () {
-                      /// TODO: レビュー登録処理
+                    onPressed: () async {
+                      var result = await confirmDialog('確認ダイアログ', '登録してもよろしいですか？', context);
+                      if (result == 1) {
+                        await _storeReviewList();
+                      }
+                      // 一覧へ画面遷移
+                      context.go('/home');
                     },
                     child: const Text(
                       '投稿する',
