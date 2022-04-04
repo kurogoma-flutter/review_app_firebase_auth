@@ -108,7 +108,7 @@ class _CreateReviewState extends State<CreateReview> {
                     BoxShadow(
                       color: Colors.black26,
                       spreadRadius: 0.5,
-                      blurRadius: 10.0,
+                      blurRadius: 5.0,
                       offset: Offset(1, 1),
                     ),
                   ],
@@ -149,7 +149,7 @@ class _CreateReviewState extends State<CreateReview> {
                     BoxShadow(
                       color: Colors.black26,
                       spreadRadius: 0.5,
-                      blurRadius: 10.0,
+                      blurRadius: 5.0,
                       offset: Offset(1, 1),
                     ),
                   ],
