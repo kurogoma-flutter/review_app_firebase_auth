@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 /// ページ仕様
 /// 1. 表示専用画面
@@ -16,6 +17,9 @@ class ReviewDetail extends StatefulWidget {
 }
 
 class _ReviewDetailState extends State<ReviewDetail> {
+  // 日付フォーマット
+  DateFormat dateFormat = DateFormat('yyyy/MM/dd');
+
   List<DocumentSnapshot> _review = [];
   _getReviewData() async {
     var snapshot = await FirebaseFirestore.instance.collection('reviewList').where('id', isEqualTo: widget.id).limit(1).get();
@@ -40,7 +44,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.pop();
+            context.go('/');
           },
         ),
       ),
@@ -51,7 +55,7 @@ class _ReviewDetailState extends State<ReviewDetail> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              "商品を選択",
+              "対象商品",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -115,7 +119,12 @@ class _ReviewDetailState extends State<ReviewDetail> {
                 maxLines: 5,
               ),
             ),
-            const SizedBox(height: 60),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(dateFormat.format(_review[0]['createAt'].toDate()).toString()),
+              ],
+            ),
           ],
         ),
       ),

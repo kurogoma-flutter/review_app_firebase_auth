@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../components/dialog.dart';
@@ -79,31 +80,36 @@ class _ReviewListPageState extends State<ReviewListPage> {
             child: ListView(
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      child: Text(dateFormat.format(data['createAt'].toDate()).toString()),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.black45),
+                return GestureDetector(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        child: Text(dateFormat.format(data['createAt'].toDate()).toString()),
                       ),
-                      child: ListTile(
-                        leading: Text(data['id'].toString()),
-                        title: Text(
-                          data['itemName'] ?? 'データがありません',
-                          style: const TextStyle(fontSize: 20),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.black45),
                         ),
-                        subtitle: Text(data['content'] ?? 'データがありません'),
-                        trailing: _deleteIcon(document.id, data['uid']),
+                        child: ListTile(
+                          leading: Text(data['id'].toString()),
+                          title: Text(
+                            data['itemName'] ?? 'データがありません',
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                          subtitle: Text(data['content'] ?? 'データがありません'),
+                          trailing: _deleteIcon(document.id, data['uid']),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  onTap: () {
+                    context.go('/reviewDetail/${data['id']}');
+                  },
                 );
               }).toList(),
             ),
